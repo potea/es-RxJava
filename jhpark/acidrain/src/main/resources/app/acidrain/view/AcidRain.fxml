@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024" prefWidth="768" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.acidrain.GameController">
+   <children>
+      <Label layoutX="14.0" layoutY="14.0" text="현재 점수 : " />
+      <Label fx:id="labelScore" layoutX="81.0" layoutY="14.0" text="0" />
+      <Label layoutX="110.0" layoutY="14.0" text="생명 : " />
+      <Label fx:id="labelLife" layoutX="148.0" layoutY="14.0" text="5" />
+      <AnchorPane fx:id="pane" layoutX="14.0" layoutY="31.0" prefHeight="897.0" prefWidth="740.0" />
+      <TextField fx:id="textField" layoutX="301.0" layoutY="990.0"/>
+
+   </children>
+</AnchorPane>
