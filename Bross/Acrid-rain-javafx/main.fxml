@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<?import javafx.scene.layout.VBox?>
+<BorderPane minHeight="480" minWidth="720" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.121"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainView">
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10"/>
+    </padding>
+    <top>
+        <GridPane alignment="CENTER_RIGHT" BorderPane.alignment="CENTER_RIGHT">
+            <Label text="count : " GridPane.columnIndex="0"/>
+            <Label fx:id="countLabel" text="0" GridPane.columnIndex="1"/>
+        </GridPane>
+    </top>
+    <center>
+
+        <SplitPane fx:id="container"/>
+
+    </center>
+    <bottom>
+        <VBox>
+            <TextField fx:id="input" BorderPane.alignment="CENTER">
+                <VBox.margin>
+                    <Insets top="20"/>
+                </VBox.margin>
+                <padding>
+                    <Insets top="10" bottom="10"/>
+                </padding>
+            </TextField>
+        </VBox>
+    </bottom>
+
+</BorderPane>
