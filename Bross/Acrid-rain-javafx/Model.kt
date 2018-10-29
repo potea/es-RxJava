@@ -1,3 +1,10 @@
+import io.reactivex.Observable
+import io.reactivex.ObservableSource
+import io.reactivex.rxkotlin.zipWith
+import io.reactivex.schedulers.Schedulers
+import utils.ResourceHelper
+import java.util.concurrent.TimeUnit
+import java.util.Random
 
 
 sealed class Model {
@@ -7,28 +14,21 @@ sealed class Model {
         private val words: List<String>
         private val textsObservable: Observable<String>
 
-        private val INTERVAL_TIME: Long = 1 // seconds
-        val trigger = Observable.interval(INTERVAL_TIME, TimeUnit.MICROSECONDS)
-
         init {
             words = file.readLines(Charsets.UTF_8)
-
-//            textsObservable = Observable.fromArray(words).flatMapIterable { it -> it }.sorted().filter { it.length > 2 }.concatMap { it->
-//                Observable.just(it).zipWith(trigger).map { it.first }
-//            }
-
-
             textsObservable = Observable
                     .just(words)
                     .observeOn(Schedulers.io())
                     .flatMapIterable { it -> it }
-                    .sorted()
                     .filter { it.length > 2 }
                     .repeat()
+
         }
 
         fun sampleWord(): String {
-            return textsObservable.sample(1, TimeUnit.MICROSECONDS).blockingFirst()
+            return textsObservable
+                    .sample(100, TimeUnit.NANOSECONDS)
+                    .blockingFirst()
         }
 
     }
