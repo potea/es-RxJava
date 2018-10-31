@@ -69,14 +69,19 @@ class MainViewModel {
     fun bindEnterEvent(node: Node) {
         enterEvents = JavaFxObservable.actionEventsOf(node)
         enterEvents.subscribe { _ ->
-            labels.forEach { it ->
-                if (it.isCorrect(currentInput.value)) {
-                    count.value+= it.text.length
-                    speed.value+=1
-                    it.invalidate(spped = speed.value)
-                    it.text = worModel.sampleWord()
-                }
-            }
+
+            labels.asSequence()
+                    .filter { it.isCorrect(currentInput.value) }
+                    .maxBy { it.positionY.value }
+                    .let {
+                        if (it != null) {
+                            count.value += it.text.length
+                            speed.value += 1
+                            it.invalidate(spped = speed.value)
+                            it.text = worModel.sampleWord()
+                        }
+                    }
+
             currentInput.value = ""
         }
     }
