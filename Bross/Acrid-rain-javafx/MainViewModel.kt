@@ -81,6 +81,7 @@ class MainViewModel {
                             it.text = worModel.sampleWord()
                         }
                     }
+
             currentInput.value = ""
         }
     }
