@@ -47,9 +47,7 @@ class MainViewModel {
     }
 
     val speed = ReadOnlyIntegerWrapper(5)
-
-    private val INTERVAL_TIME: Long = 1 // seconds
-    val trigger = Observable.interval(INTERVAL_TIME, TimeUnit.SECONDS)
+    val labels = mutableListOf<VerticalMoveLabel>()
 
     val labels = mutableListOf<VerticalMoveLabel>()
 
@@ -81,7 +79,6 @@ class MainViewModel {
                             it.text = worModel.sampleWord()
                         }
                     }
-
             currentInput.value = ""
         }
     }
@@ -91,10 +88,8 @@ class MainViewModel {
         val increment = (1 / containerObservable.size.toDouble())
         container.setDividerPositions(*increment.rangeTo(1.0).step(increment).map { Math.round(it * 100) / 100.0 }.toDoubleArray())
     }
-
-    fun stageSample(): HBox {
-        return stageObservable.filter { it.children.isEmpty() }.sample(1, TimeUnit.MICROSECONDS).blockingFirst()
-    }
-
+    //fun stageSample(): HBox {
+    //    return stageObservable.filter { it.children.isEmpty() }.sample(1, TimeUnit.MICROSECONDS).blockingFirst()
+    //}
 
 }
