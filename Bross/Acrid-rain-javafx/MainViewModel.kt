@@ -49,6 +49,8 @@ class MainViewModel {
     val speed = ReadOnlyIntegerWrapper(5)
     val labels = mutableListOf<VerticalMoveLabel>()
 
+    val labels = mutableListOf<VerticalMoveLabel>()
+
     init {
         countString.bind(count.asString())
 
@@ -86,4 +88,8 @@ class MainViewModel {
         val increment = (1 / containerObservable.size.toDouble())
         container.setDividerPositions(*increment.rangeTo(1.0).step(increment).map { Math.round(it * 100) / 100.0 }.toDoubleArray())
     }
+    //fun stageSample(): HBox {
+    //    return stageObservable.filter { it.children.isEmpty() }.sample(1, TimeUnit.MICROSECONDS).blockingFirst()
+    //}
+
 }
