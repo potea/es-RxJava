@@ -6,12 +6,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainPresenter implements Initializable {
-    @FXML private AnchorPane board;
+    @FXML private GridPane board;
     @FXML private Button tryRemoveButton;
     @FXML private TextField textField;
     @FXML private BoardController boardController;
@@ -28,7 +29,7 @@ public class MainPresenter implements Initializable {
         });
 
         textField.setFocusTraversable(true);
-        boardController.startRaining(2000,500);
+        boardController.startRaining();
     }
 
     private void tryRemoveAcid(String sentence){
