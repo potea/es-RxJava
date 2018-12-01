@@ -1,9 +1,9 @@
 package model;
 
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 import model.vo.Sentence;
-import rx.Observable;
-import rx.Subscription;
-import rx.subjects.PublishSubject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+/**
+ *
+ */
 public class SentencesManager {
+    public static final int SENTENCE_DIVIDE_LENGTH = 1000;
+
     private int maxSpeed;
     private int minSpeed;
 
@@ -19,7 +24,7 @@ public class SentencesManager {
 
     private PublishSubject<Sentence> subject;
     private Observable<Sentence> observable;
-    private Map<Sentence, Subscription> subscriptionMap;
+    private Map<Sentence, Disposable> subscriptionMap;
 
     private Random random;
 
@@ -30,7 +35,7 @@ public class SentencesManager {
         sentences = new ArrayList<>();
 
         subject = PublishSubject.create();
-        observable = subject.asObservable().doOnNext(this::replaceSentenceIdx);
+        observable = subject.doOnNext(this::replaceSentenceIdx);
         subscriptionMap = new HashMap<>();
         random = new Random();
     }
@@ -39,35 +44,39 @@ public class SentencesManager {
         if (!sentences.contains(sentence)) {
             sentences.add(sentence);
 
-            int interval = random.nextInt(1000/minSpeed-1000/maxSpeed) + 1000/maxSpeed;
+            int interval = random.nextInt(SENTENCE_DIVIDE_LENGTH / minSpeed - SENTENCE_DIVIDE_LENGTH / maxSpeed) + SENTENCE_DIVIDE_LENGTH / maxSpeed;
             subscriptionMap.put(sentence,
                     Observable.interval(interval, TimeUnit.MILLISECONDS)
-                            .take(1000)
+                            .take(SENTENCE_DIVIDE_LENGTH)
                             .map(i -> i + 1)
                             .doOnNext(sentence::setHeight)
                             .map(x -> sentence)
                             .subscribe(subject::onNext,
                                     this::logging,
-                                    subject::onCompleted));
+                                    () -> removeSentence(sentence)));
         }
     }
 
-    public Sentence popSentence(String text) {
+    public Sentence removeSentence(String text) {
         Sentence removedSentence = sentences.stream()
                 .filter(x -> x.getSentence().equals(text))
                 .findFirst()
                 .orElse(null);
         if (removedSentence != null) {
-            sentences.remove(removedSentence);
-
-            subscriptionMap.get(removedSentence).unsubscribe();
-            subscriptionMap.remove(removedSentence);
+            removeSentence(removedSentence);
         }
         return removedSentence;
     }
 
-    public Observable<Sentence> getSentencesHotObservable() {
+    public Observable<Sentence> getSentencesObservable() {
         return observable;
+    }
+
+    public void close(){
+        subject.onComplete();
+        subscriptionMap.values().forEach(Disposable::dispose);
+        subscriptionMap.clear();
+        sentences.clear();
     }
 
     private void replaceSentenceIdx(Sentence sentence) {
@@ -80,7 +89,13 @@ public class SentencesManager {
                 sentences.set(idx, front);
             }
         }
-        System.out.println(sentence.getSentence() + ":" + sentence.getHeight());
+    }
+
+    private void removeSentence(Sentence removedSentence) {
+        sentences.remove(removedSentence);
+
+        subscriptionMap.get(removedSentence).dispose();
+        subscriptionMap.remove(removedSentence);
     }
 
     private void logging(Throwable e) {
